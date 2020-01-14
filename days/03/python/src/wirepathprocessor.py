@@ -21,9 +21,4 @@ def get_list_of_points_from_wire_path(wirepath):
 
 
 def find_intersections(pointsa, pointsb):
-    intersections = []
-    for i in pointsa:
-        for j in pointsb:
-            if i == j:
-                intersections.append(i)
-    return intersections
+    return list(set(pointsa) & set(pointsb))
