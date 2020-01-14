@@ -1,9 +1,14 @@
-from src.passwordvalidator import validatePassword
+from src.passwordvalidator import validatePassword, validatePasswordPartTwo
 
-total = 0
+totalPartOne = 0
+totalPartTwo = 0
 
 for i in range(146810, 612564):
     if validatePassword(i, (14810, 612564)):
-        total += 1
+        totalPartOne += 1
+    if validatePasswordPartTwo(i, (14810, 612564)):
+        totalPartTwo += 1
 
-print(total)
+print(totalPartOne)
+print(totalPartTwo)
+

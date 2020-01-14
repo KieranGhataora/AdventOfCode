@@ -1,6 +1,6 @@
 import unittest
 
-from src.passwordvalidator import validatePassword
+from src.passwordvalidator import validatePassword, validatePasswordPartTwo
 
 
 class ValidatePasswordTests(unittest.TestCase):
@@ -46,6 +46,14 @@ class ValidatePasswordTests(unittest.TestCase):
         for (password, givenrange) in tests:
             with self.subTest(password=password, givenrange=givenrange):
                 self.assertFalse(validatePassword(password, givenrange))
+
+    def test_validatepasswordparttwo_rejects_passwords_with_descending_numbers(self):
+        tests = [
+            (223450, (1, 123444))
+        ]
+        for (password, givenrange) in tests:
+            with self.subTest(password=password, givenrange=givenrange):
+                self.assertFalse(validatePasswordPartTwo(password, givenrange))
 
 
 if __name__ == '__main__':
