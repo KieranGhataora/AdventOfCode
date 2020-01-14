@@ -1,6 +1,6 @@
 import unittest
 
-from main import runA, runB
+from src.circuitsolver import findEarliestIntersection, findClosestIntersection
 
 
 class MyTestCase(unittest.TestCase):
@@ -14,11 +14,11 @@ class MyTestCase(unittest.TestCase):
         ]
         for (instructions, expected) in tests:
             with self.subTest(instructions=instructions):
-                self.assertEqual(runA(instructions), expected)
+                self.assertEqual(findClosestIntersection(instructions), expected)
 
     def test_runB_returns_correct_values(self):
         tests = [
-            (["R8,U5,L5,D3", "U7,R6,D4,L4"], 15),
+            (["R8,U5,L5,D3", "U7,R6,D4,L4"], 30),
             (["R75,D30,R83,U83,L12,D49,R71,U7,L72",
               "U62,R66,U55,R34,D71,R55,D58,R83"], 610),
             (["R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
@@ -26,7 +26,7 @@ class MyTestCase(unittest.TestCase):
         ]
         for (instructions, expected) in tests:
             with self.subTest(instructions=instructions):
-                self.assertEqual(runB(instructions), expected)
+                self.assertEqual(findEarliestIntersection(instructions), expected)
 
 
 if __name__ == '__main__':
