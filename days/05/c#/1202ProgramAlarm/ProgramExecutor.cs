@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using _1202ProgramAlarm.Models;
+using _1202ProgramAlarm.Models.Diagnostics;
 
 namespace _1202ProgramAlarm
 {
@@ -12,6 +13,13 @@ namespace _1202ProgramAlarm
             .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(OpCodeHandler)))
             .Select(t => Activator.CreateInstance(t, null) as OpCodeHandler).ToList();
 
+        private IWriter writer;
+
+        public ProgramExecutor(IWriter writer)
+        {
+            this.writer = writer;
+        }
+
         public int[] ExecuteProgram(int[] program, int currentPosition = 0)
         {
             var opCodeHandler = opCodeHandlers.FirstOrDefault(och => och.Code.Equals(program[currentPosition]));
@@ -20,7 +28,7 @@ namespace _1202ProgramAlarm
             
             return opCodeHandler.ExitCode
                 ? program
-                : ExecuteProgram(opCodeHandler.Execute(program, currentPosition), currentPosition + 4);
+                : ExecuteProgram(opCodeHandler.Execute(program, ref currentPosition, writer), currentPosition);
         }
     }
 }

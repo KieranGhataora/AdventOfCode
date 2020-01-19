@@ -2,14 +2,15 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using _1202ProgramAlarm.Models.Diagnostics;
 
 namespace _1202ProgramAlarm
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var programExecutor = new ProgramExecutor();
+            var programExecutor = new ProgramExecutor(new Writer());
 
             var fileInput = File.ReadAllText("../../input.txt")
                 .Split(',')

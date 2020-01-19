@@ -3,9 +3,9 @@ using _1202ProgramAlarm.Models.Diagnostics;
 
 namespace _1202ProgramAlarm.Models.OpCodes
 {
-    public class Multiply : OpCodeHandler
+    public class Move: OpCodeHandler
     {
-        public Multiply() : base(2, false)
+        public Move() : base(3, false)
         {
         }
 
@@ -13,10 +13,11 @@ namespace _1202ProgramAlarm.Models.OpCodes
         {
             var copiedProgram = program.ToArray();
 
-            copiedProgram[program[currentPosition + 3]] =
-                copiedProgram[program[currentPosition + 1]] * copiedProgram[program[currentPosition + 2]];
-
-            currentPosition += 4;
+            var valToBeMoved = program[currentPosition + 1];
+            
+            copiedProgram[valToBeMoved] = valToBeMoved;
+            
+            currentPosition += 2;
             
             return copiedProgram;
         }
