@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _1202ProgramAlarm.Models.Diagnostics;
+using _1202ProgramAlarm.Tests.TestData;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
 using Xunit;
@@ -13,88 +14,68 @@ namespace _1202ProgramAlarm.Tests
 {
     public class ProgramExecutorTests
     {
-        private readonly ProgramExecutor programExecutor;
+        private ProgramExecutor programExecutor;
         private readonly Mock<IWriter> mockWriter = new Mock<IWriter>();
 
         public ProgramExecutorTests(ITestOutputHelper output)
         {
-            mockWriter.Setup(mw => mw.Write(It.IsAny<string>()));
-            programExecutor = new ProgramExecutor(mockWriter.Object);
+            mockWriter.Setup(mw => mw.Write(It.IsAny<string>())).Callback<string>(output.WriteLine);
         }
 
         [Theory]
         [ClassData(typeof(ProgramExecutorTestData))]
-        public void Test1(int[] program, int[] expectedOutput)
+        public void ExecuteProgram_CorrectlyParsesProgram(int[] program, int[] expectedOutput)
         {
+            programExecutor = new ProgramExecutor(mockWriter.Object);
             Assert.Equal(expectedOutput, programExecutor.ExecuteProgram(program));
         }
 
-        [Fact]
-        public void ExecuteProgram_OutputsCorrectDiagnostics()
+        [Theory]
+        [ClassData(typeof(OutputsCorrectDiagnosticsTestData))]
+        public void ExecuteProgram_OutputsCorrectDiagnostics(int[] program, string expectedOutput)
         {
-            programExecutor.ExecuteProgram(new[] {4, 30, 99});
-            mockWriter.Verify(mw => mw.Write(It.Is<string>((t => t.Equals("30")))));
+            programExecutor = new ProgramExecutor(mockWriter.Object);
+            programExecutor.ExecuteProgram(program);
+            mockWriter.Verify(mw => mw.Write(It.Is<string>((t => t.Equals(expectedOutput)))));
+        }
+        
+        [Theory]
+        [ClassData(typeof(ReadsInCorrectlyTestData))]
+        public void ExecuteProgram_ReadsInCorrectly(int[] program, int positionValue, int inputValue)
+        {
+            mockWriter.Setup(mw => mw.ReadLine()).Returns("2");
+            programExecutor = new ProgramExecutor(mockWriter.Object);
+            var output = programExecutor.ExecuteProgram(program);
+            Assert.Equal(inputValue, output[positionValue]);
+        }
+
+        [Theory]
+        [ClassData(typeof(LessThanTestData))]
+        public void ExecuteProgram_LessThanOpCodeWorksAsExpected(int[] program, int[] expectedOutput)
+        {
+            programExecutor = new ProgramExecutor(mockWriter.Object);
+            Assert.Equal(expectedOutput, programExecutor.ExecuteProgram(program));
+        }
+        
+        [Theory]
+        [ClassData(typeof(EqualsTestData))]
+        public void ExecuteProgram_EqualsOpCodeWorksAsExpected(int[] program, int[] expectedOutput)
+        {
+            programExecutor = new ProgramExecutor(mockWriter.Object);
+            Assert.Equal(expectedOutput, programExecutor.ExecuteProgram(program));
+        }
+
+        [Theory]
+        [ClassData(typeof(ExecutionOutputsCorrectDiagnosticsCodeTestData))]
+        public void ExecuteProgram_OutputsCorrectDiagnosticsCode(int[] program, string readLineOutput,
+            string expectedOutput)
+        {
+            mockWriter.Setup(mw => mw.ReadLine()).Returns(readLineOutput);
+            programExecutor = new ProgramExecutor(mockWriter.Object);
+            var output = programExecutor.ExecuteProgram(program);
+            mockWriter.Verify(mw => mw.Write(It.Is<string>(s => s.Equals(expectedOutput))));
+       
         }
     }
 }
 
-public class TestWriter : IWriter
-{
-    private readonly ITestOutputHelper output;
-
-    public TestWriter(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
-
-    public void Write(string text)
-    {
-        output.WriteLine(text);
-    }
-}
-
-public class ProgramExecutorTestData : IEnumerable<object[]>
-{
-    private readonly List<object[]> executorTestData = new List<object[]>()
-    {
-        new object[]
-        {
-            new[] {1, 0, 0, 0, 99},
-            new[]
-            {
-                2,
-                0, 0, 0, 99
-            }
-        },
-        new object[]
-        {
-            new[] {2, 3, 0, 3, 99},
-            new[] {2, 3, 0, 6, 99}
-        },
-        new object[]
-        {
-            new[] {2, 4, 4, 5, 99, 0},
-            new[] {2, 4, 4, 5, 99, 9801}
-        },
-        new object[]
-        {
-            new[] {1, 1, 1, 4, 99, 5, 6, 0, 99},
-            new[] {30, 1, 1, 4, 2, 5, 6, 0, 99}
-        },
-        new object[]
-        {
-            new[] {3, 4, 99, 0, 0},
-            new[] {3, 4, 99, 0, 4},
-        }
-    };
-
-    public IEnumerator<object[]> GetEnumerator() => executorTestData.AsEnumerable().GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-}
-
-public class TestDataUnit
-{
-    public int[] Program { get; set; }
-    public int[] ExpectedOutput { get; set; }
-}

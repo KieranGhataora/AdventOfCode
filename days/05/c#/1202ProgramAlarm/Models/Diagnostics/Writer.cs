@@ -8,5 +8,9 @@ namespace _1202ProgramAlarm.Models.Diagnostics
         {
             Console.WriteLine(text);
         }
+
+        string IWriter.ReadLine() => Console.ReadLine();
+        
+        public string ReadLine => Console.ReadLine();
     }
 }

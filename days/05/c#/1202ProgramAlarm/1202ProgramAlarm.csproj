@@ -6,4 +6,9 @@
     <RootNamespace>_1202ProgramAlarm</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="../../input.txt" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+    <Content Include="../../input-2.txt" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+  
 </Project>

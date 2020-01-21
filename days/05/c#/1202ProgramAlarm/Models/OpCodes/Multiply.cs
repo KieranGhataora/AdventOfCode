@@ -5,19 +5,19 @@ namespace _1202ProgramAlarm.Models.OpCodes
 {
     public class Multiply : OpCodeHandler
     {
-        public Multiply() : base(2, false)
-        {
-        }
+        public Multiply() : base(2, false) { }
 
-        public override int[] Execute(int[] program, ref int currentPosition, IWriter diagnosticsWriter)
+        public override int[] Execute(int[] program, int[] parameterModes, ref int currentPosition,
+            IWriter diagnosticsWriter)
         {
             var copiedProgram = program.ToArray();
 
-            copiedProgram[program[currentPosition + 3]] =
-                copiedProgram[program[currentPosition + 1]] * copiedProgram[program[currentPosition + 2]];
+            var parameters = GetParameters(program, parameterModes, currentPosition, 3);
+
+            copiedProgram[parameters[2]] = parameters[0] * parameters[1];
 
             currentPosition += 4;
-            
+
             return copiedProgram;
         }
     }

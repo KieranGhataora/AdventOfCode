@@ -13,7 +13,7 @@ namespace _1202ProgramAlarm
             .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(OpCodeHandler)))
             .Select(t => Activator.CreateInstance(t, null) as OpCodeHandler).ToList();
 
-        private IWriter writer;
+        private readonly IWriter writer;
 
         public ProgramExecutor(IWriter writer)
         {
@@ -22,13 +22,43 @@ namespace _1202ProgramAlarm
 
         public int[] ExecuteProgram(int[] program, int currentPosition = 0)
         {
-            var opCodeHandler = opCodeHandlers.FirstOrDefault(och => och.Code.Equals(program[currentPosition]));
+            var instruction = program[currentPosition].ToString();
+
+            int[] parameterModes;
+            int opCode;
             
+            if (instruction.Length == 1)
+            {
+                opCode = int.Parse(instruction);
+                parameterModes = Enumerable.Repeat(0, 3).ToArray();
+            }
+            else
+            {
+                opCode = int.Parse(instruction.Substring(instruction.Length - 2));
+                parameterModes = ParseParameterModes(instruction.Substring(0, instruction.Length - 2));
+            }
+
+            var opCodeHandler = opCodeHandlers.FirstOrDefault(och => och.Code.Equals(opCode));
+
             if (opCodeHandler == null) throw new NotImplementedException("Invalid OpCode!");
-            
+
             return opCodeHandler.ExitCode
                 ? program
-                : ExecuteProgram(opCodeHandler.Execute(program, ref currentPosition, writer), currentPosition);
+                : ExecuteProgram(opCodeHandler.Execute(program, parameterModes, ref currentPosition, writer),
+                    currentPosition);
+        }
+
+        private int[] ParseParameterModes(string modes)
+        {
+            var enumerable = modes
+                .ToCharArray()
+                .Select(char.GetNumericValue)
+                .Select(Convert.ToInt32)
+                .Reverse()
+                .ToArray();
+
+            return Enumerable.Repeat(0, 3)
+                .Select((y, s) => s < enumerable.Length ? enumerable[s] : y).ToArray();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace _1202ProgramAlarm.Models.OpCodes
         {
         }
 
-        public override int[] Execute(int[] program, ref int currentPosition, IWriter diagnosticsWriter)
+        public override int[] Execute(int[] program, int[] parameterModes, ref int currentPosition, IWriter diagnosticsWriter)
         {
             return program;
         }

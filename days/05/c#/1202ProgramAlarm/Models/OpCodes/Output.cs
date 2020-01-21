@@ -10,9 +10,11 @@ namespace _1202ProgramAlarm.Models.OpCodes
         {
         }
 
-        public override int[] Execute(int[] program, ref int currentPosition, IWriter diagnosticsWriter)
+        public override int[] Execute(int[] program, int[] parameterModes, ref int currentPosition, IWriter diagnosticsWriter)
         {
-            diagnosticsWriter.Write(program[currentPosition + 1].ToString());
+            var val = parameterModes[0] == 0 ? program[program[currentPosition + 1]] : program[currentPosition + 1];
+   
+            diagnosticsWriter.Write(val.ToString());
             
             currentPosition += 2;
             
