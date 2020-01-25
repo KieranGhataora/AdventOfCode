@@ -1,0 +1,4 @@
+[
+  "test_planet_mapper.py::test_count_orbits_calculates_correct_number_of_orbits[test_input0-expected0]",
+  "test_orbit_calculator.py::test_count_orbits_calculates_correct_number_of_orbits[test_input0-42]"
+]
