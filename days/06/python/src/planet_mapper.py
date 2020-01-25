@@ -10,7 +10,7 @@ def map_system(orbits_array):
         if child not in planets_dict:
             planets_dict[child] = Planet(child, [])
 
-        planets_dict[child].root = False
+        planets_dict[child].parent = planets_dict[parent]
         planets_dict[parent].planets.append(planets_dict[child])
 
-    return list(filter(lambda p: p.root, planets_dict.values()))
+    return list(filter(lambda p: p.parent is None, planets_dict.values())), planets_dict
