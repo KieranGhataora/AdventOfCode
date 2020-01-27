@@ -7,3 +7,8 @@ test('parses layers correctly', () => {
 test('zero counter', () => {
     expect(countDigit("089493849040930843048904808340", 0)).toBe(8)
 });
+
+test('decodes layers properly', () => {
+    expect(decodeLayers(["0222", "1122", "2212", "0000"])).toBe("0110")
+})
+
